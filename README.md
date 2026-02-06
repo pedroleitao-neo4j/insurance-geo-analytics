@@ -102,7 +102,7 @@ A key output of this project is the **Risk-Adjusted Loss Potential (RALP)**. Thi
 
 ### Dashboard: EAL vs RALP
 
-This dashboard visualizes the "Risk Hotspots"—regions where disasters would cause economic shock that insurance cannot absorb.
+This dashboard visualizes the "Risk Hotspots" - regions where disasters would cause economic shock that insurance cannot absorb.
 
 <p align="center">
   <img src="renderings/ralp_heatmap_BEL.png" alt="RALP Heatmap"/>
