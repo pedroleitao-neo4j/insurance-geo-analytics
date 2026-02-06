@@ -19,9 +19,9 @@ Natural catastrophes (NatCat) pose significant risks to insurers and reinsurers.
 
 This project demonstrates how Re/Insurers can use Neo4j as a data store to answer critical questions:
 
-* **Accumulation Control:** Where are the "hotspots" of high economic value and high vulnerability?
-* **Protection Gap:** Which regions have high expected losses but stressed insurance markets?
-* **Risk Communities:** Which regions share similar multidimensional risk profiles?
+- **Accumulation Control:** Where are the "hotspots" of high economic value and high vulnerability?
+- **Protection Gap:** Which regions have high expected losses but stressed insurance markets?
+- **Risk Communities:** Which regions share similar multidimensional risk profiles?
 
 ## Data Sources
 
@@ -43,6 +43,12 @@ The schema centers on **Location (Region)** as the unifying entity, connecting t
 * **`(:Region)-[:HAS_VULNERABILITY]->(:Vulnerability)`**: Socio-economic vulnerability scores linked to regions.
 * **`(:LossEvent)-[:IMPACTED_REGION]->(:Region)`**: Historical catastrophe events linked to the areas they impacted.
 * **`(:Country)-[:REPORTED_FINANCIALS]->(:InsuranceMetric)`**: Financial KPIs (GWP, Claims, Ratios) linked to the top-level country node.
+
+<p align="center">
+  <img src="renderings/schema_graph.png" alt="Graph Schema"/>
+  <br>
+  <sub>The Graph Schema</sub>
+</p>
 
 ---
 
