@@ -12,19 +12,12 @@ The resulting Knowledge Graph serves as a dynamic risk engine. Instead of viewin
   <sub>Vulnerability-Adjusted Economic Exposure Map (30 arc-second resolution)</sub>
 </p>
 
+
 ## Business Context
 
-Natural catastrophes (NatCat) pose significant risks to insurers and reinsurers. To accurately manage these risks, it is necessary to understand the interaction between:
+Natural catastrophes (NatCat) pose significant risks to insurers and reinsurers. Effectively managing these risks requires a deep understanding of how economic exposure, hazard vulnerability, and financial capacity interact. Economic exposure refers to the value of assets at risk, while hazard vulnerability describes how susceptible those assets are to damage from natural events. Financial capacity, on the other hand, is the insurance market's ability to absorb losses when disasters strike.
 
-- **Economic Exposure:** The value of assets at risk.
-- **Hazard Vulnerability:** The susceptibility of those assets to damage.
-- **Financial Capacity:** The insurance market's ability to absorb losses.
-
-This project demonstrates how Re/Insurers can use Neo4j as a data store to answer critical questions:
-
-- **Accumulation Control:** Where are the "hotspots" of high economic value and high vulnerability?
-- **Protection Gap:** Which regions have high expected losses but stressed insurance markets?
-- **Risk Communities:** Which regions share similar multidimensional risk profiles?
+This project demonstrates how Re/Insurers can leverage Neo4j as a data store to answer critical business questions. For example, it enables the identification of accumulation hotspots-areas where high economic value coincides with high vulnerability. It also helps to reveal protection gaps by highlighting regions with high expected losses but stressed insurance markets. Finally, we demonstrate how unsupervised similarity detection algorithms available in Neo4j can be used to identify **risk communities**, allowing users to find regions that share similar multidimensional risk profiles.
 
 ## Data Sources
 
@@ -53,11 +46,9 @@ The schema centers on **Location (Region)** as the unifying entity, connecting t
   <sub>The Graph Schema</sub>
 </p>
 
----
-
 ## Data Loading & Spatial ETL ([`loader.ipynb`](loader.ipynb))
 
-The loader notebook handles the ingestion of high-resolution grid data and performs spatial joins to map economic exposure to the NUTS administrative hierarchy (NUTS1/2/3).
+The loader notebook handles the ingestion of high-resolution grid data and performs spatial joins to map economic exposure to the [NUTS](https://ec.europa.eu/eurostat/web/nuts) administrative hierarchy (NUTS1/2/3).
 
 ### Economic Exposure (TIV)
 
@@ -66,8 +57,6 @@ We load LitPop data to visualize Total Insurable Value density. Below is the eco
 ### Aggregation
 
 The granular cells are spatially joined with NUTS3 polygons to allow for regional reporting.
-
----
 
 ## Risk Analysis & Insights ([`analysis.ipynb`](analysis.ipynb))
 
@@ -89,7 +78,7 @@ By analyzing historical `LossEvent` nodes, we calculate empirical loss ratios fo
 
 ### Location-Specific Risk Assessment
 
-We can query the graph for any specific coordinate (e.g., Verviers, BE) to estimate potential impacts. The model combines local exposure, regional vulnerability, and historical loss ratios to calculate **Conservative** vs. **Worst-Case** impact estimates.
+We can query the graph for any specific coordinate (e.g., Verviers in Belgium, which is a flood prone region) to estimate potential impacts. The model combines local exposure, regional vulnerability, and historical loss ratios to calculate **Conservative** vs. **Worst-Case** impact estimates.
 
 ### Regional Risk Mapping
 
@@ -119,8 +108,14 @@ This dashboard visualizes the "Risk Hotspots"—regions where disasters would ca
 
 This map encodes two dimensions:
 
-- **Expected Annual Loss (Horizontal):** Physical Risk.
-- **Insurance Market Stress (Vertical):** Financial Capacity.
+- Expected Annual Loss (Horizontal): Physical Risk.
+- Insurance Market Stress (Vertical): Financial Capacity.
+
+<p align="center">
+  <img src="renderings/protection_gap_bivariate_BEL.png" alt="Bivariate Protection Gap Heatmap"/>
+  <br>
+  <sub>Bivariate Protection Gap Heatmap</sub>
+</p>
 
 ## Graph Data Science: Community Detection
 
@@ -130,9 +125,13 @@ Using the **Louvain Algorithm** via the Neo4j Graph Data Science (GDS) library, 
 
 ### Prerequisites
 
-- **Neo4j Database** (AuraDB or Local)
-- **Python 3.8+**
-- **DRMKC API Token** (Required for vulnerability/loss data)
+- Neo4j Database (AuraDB or Local)
+- Python 3.8+
+- DRMKC API Token (Required for vulnerability/loss data)
+
+You can create a free Neo4j AuraDB instance [here](https://neo4j.com/cloud/aura/). Make sure to note down your connection URI, username, and password for the environment setup.
+
+To register for a DRMKC API token, visit the [DRMKC Risk Data Hub API documentation](https://drmkc.jrc.ec.europa.eu/risk-data-hub-api/docs/) and follow their instructions to obtain access.
 
 ### Environment Setup
 
@@ -146,3 +145,7 @@ ISO_A3_COUNTRY_CODE=BEL
 DRMKC_TOKEN=your_token_here
 USD_TO_EUR=0.92
 ```
+
+You can set the target country for the analysis by changing the `ISO_A3_COUNTRY_CODE` variable (e.g., "FRA" for France, "ITA" for Italy). Before running the notebooks, ensure you have downloaded the necessary `LitPop` and `EIOPA` datasets and placed them in the `.data/` directory as per the instructions in `loader.ipynb`.
+
+> Note that for large countries with many NUTS3 regions, the spatial joins and graph loading may require significant memory in your Neo4j instance. Consider starting with a smaller country (e.g., Belgium) for initial testing.
