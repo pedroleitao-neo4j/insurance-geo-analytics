@@ -29,16 +29,26 @@ The Knowledge Graph is built using a Spatial ETL pipeline ingesting the followin
 | [**EIOPA**](https://www.eiopa.europa.eu/tools-and-data/insurance-statistics_en#premiums-claims-and-expenses) | Insurance Statistics | Market Intelligence | Aggregated Premiums, Claims & Expenses (Profitability & Capacity). |
 | [**DRMKC**](https://drmkc.jrc.ec.europa.eu/risk-data-hub) | Risk Data Hub | Catastrophe Modelling | Vulnerability indicators and historical loss event catalogs (Flood, Storm, Earthquake). |
 
+## Project Structure
+
+*   **[`loader.ipynb`](loader.ipynb)**: **ETL & Graph Construction**. Handles data ingestion, spatial processing, and loading of nodes/relationships into Neo4j.
+*   **[`analysis.ipynb`](analysis.ipynb)**: **Analytics & Inference**. Queries the constructed graph to calculate risk metrics, visualize exposure, and detect communities.
+*   **[`MODEL.md`](MODEL.md)**: **Data Model Documentation**. Detailed specification of the Graph Schema, including Nodes, Relationships, Properties, and Constraints.
+*   **[`environment.yml`](environment.yml)**: Conda environment definition file.
+
 ## Graph Data Model
 
 The schema centers on **Location (Region)** as the unifying entity, connecting the Geo-Spatial, Risk, and Financial domains.
 
-### Nodes & Relationships
+> [!TIP]
+> For a comprehensive definition of all Nodes, Relationships, and Properties, please refer to the **[Graph Model Documentation](MODEL.md)**.
 
-* **`(:EconomicExposureCell)-[:LOCATED_IN]->(:Region)`**: Granular exposure units (LitPop) aggregated into NUTS3 administrative regions.
-* **`(:Region)-[:HAS_VULNERABILITY]->(:Vulnerability)`**: Socio-economic vulnerability scores linked to regions.
-* **`(:LossEvent)-[:IMPACTED_REGION]->(:Region)`**: Historical catastrophe events linked to the areas they impacted.
-* **`(:Country)-[:REPORTED_FINANCIALS]->(:InsuranceMetric)`**: Financial KPIs (GWP, Claims, Ratios) linked to the top-level country node.
+### High-Level Schema
+
+*   **`(:EconomicExposureCell)-[:LOCATED_IN]->(:Region)`**: Granular exposure units (LitPop) aggregated into NUTS3 administrative regions.
+*   **`(:Region)-[:HAS_VULNERABILITY]->(:Vulnerability)`**: Socio-economic vulnerability scores linked to regions.
+*   **`(:LossEvent)-[:IMPACTED_REGION]->(:Region)`**: Historical catastrophe events linked to the areas they impacted.
+*   **`(:Country)-[:REPORTED_FINANCIALS]->(:InsuranceMetric)`**: Financial KPIs (GWP, Claims, Ratios) linked to the top-level country node.
 
 <p align="center">
   <img src="renderings/schema_graph.png" alt="Graph Schema"/>
@@ -159,8 +169,8 @@ flowchart TB
         N_DB[("Neo4j Database")]
         
         subgraph GDS ["Graph Data Science"]
-            Algo1["Community Detection<br/>(Louvain)"]
-            Algo2["Similarity Search<br/>(k-NN)"]
+        Algo1["Community Detection<br/>(Louvain)"]
+        Algo2["Similarity Search<br/>(k-NN)"]
         end
     end
 
@@ -256,31 +266,39 @@ sequenceDiagram
     UW-->>C: Response: "Referral Required"
   ```
 
-## Getting Started with these Notebooks
+## Getting Started
 
 ### Prerequisites
 
-- Neo4j Database (AuraDB or Local)
-- Python 3.8+
-- DRMKC API Token (Required for vulnerability/loss data)
+*   **Neo4j Database**: AuraDB (Free Tier works) or Local Instance.
+*   **Python 3.11+**: We recommend using Conda or Mamba for environment management.
+*   **API Token**: [DRMKC Risk Data Hub](https://drmkc.jrc.ec.europa.eu/risk-data-hub-api/docs/) (for vulnerability/loss data).
 
-You can create a free Neo4j AuraDB instance [here](https://neo4j.com/cloud/aura/). Make sure to note down your connection URI, username, and password for the environment setup.
+### Installation
 
-To register for a DRMKC API token, visit the [DRMKC Risk Data Hub API documentation](https://drmkc.jrc.ec.europa.eu/risk-data-hub-api/docs/) and follow their instructions to obtain access.
+1.  **Clone the repository**
+2.  **Create the environment**:
+    ```bash
+    conda env create -f environment.yml
+    conda activate insurance-geo
+    ```
+3.  **Configure Environment**:
+    Create a `.env` file in the root directory:
+    ```bash
+    NEO4J_URI=bolt://localhost:7687
+    NEO4J_USER=neo4j
+    NEO4J_PASSWORD=your_password
+    ISO_A3_COUNTRY_CODE=BEL
+    DRMKC_TOKEN=your_drmkc_token_here
+    USD_TO_EUR=0.92
+    ```
 
-### Environment Setup
+### Usage
 
-Create a `.env` file in the root directory:
-
-```bash
-NEO4J_URI=bolt://localhost:7687
-NEO4J_USER=neo4j
-NEO4J_PASSWORD=your_password
-ISO_A3_COUNTRY_CODE=BEL
-DRMKC_TOKEN=your_token_here
-USD_TO_EUR=0.92
-```
-
-You can set the target country for the analysis by changing the `ISO_A3_COUNTRY_CODE` variable (e.g., "FRA" for France, "ITA" for Italy). Before running the notebooks, ensure you have downloaded the necessary `LitPop` and `EIOPA` datasets and placed them in the `.data/` directory as per the instructions in `loader.ipynb`.
-
-> Note that for large countries with many NUTS3 regions, the spatial joins and graph loading may require significant memory in your Neo4j instance. Consider starting with a smaller country (e.g., Belgium) for initial testing.
+1.  **Ingest Data**: Open and run `loader.ipynb`. This will:
+    *   Fetch external data (LitPop, DRMKC, EIOPA).
+    *   Perform spatial joins.
+    *   Construct the graph in Neo4j.
+2.  **Analyze Risk**: Open and run `analysis.ipynb`. This will:
+    *   Query the graph for risk metrics.
+    *   Generate visualizations (Choropleth maps, Protection Gap heatmaps).
