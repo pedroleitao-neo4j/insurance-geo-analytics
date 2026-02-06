@@ -80,6 +80,12 @@ By analyzing historical `LossEvent` nodes, we calculate empirical loss ratios fo
 
 We can query the graph for any specific coordinate (e.g., Verviers in Belgium, which is a flood prone region) to estimate potential impacts. The model combines local exposure, regional vulnerability, and historical loss ratios to calculate **Conservative** vs. **Worst-Case** impact estimates.
 
+<p align="center">
+  <img src="renderings/location_risk_BE335_Flood.png" alt="Location Specific Risk Dashboard"/>
+  <br>
+  <sub>Location Specific Risk Dashboard</sub>
+</p>
+
 ### Regional Risk Mapping
 
 Extending the point-based analysis, we generate risk maps for entire NUTS2 regions, highlighting areas with the highest potential financial impact from specific hazards.
