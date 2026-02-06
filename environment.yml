@@ -1,0 +1,33 @@
+name: insurance-geo
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - jupyter
+  - jupyterlab
+  - notebook
+  - ipykernel
+  - kaggle
+  - geopandas
+  - contextily
+  - numpy
+  - joblib
+  - pycountry
+  - networkx
+  - python-dotenv
+  - pandas
+  - tqdm
+  - kaggle
+  - matplotlib
+  - seaborn
+  - plotly
+  - squarify
+  - scikit-learn
+  - scipy
+  - xgboost
+  - pip
+  - pip:
+    - neo4j
+    - neo4j-viz
+    - playwright
