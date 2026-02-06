@@ -67,9 +67,9 @@ The analysis notebook queries the graph to estimate risk, calculate protection g
 We calculate the **Net Combined Ratio** from EIOPA data. A ratio > 100% indicates a stressed market (unprofitable underwriting), while < 100% indicates capacity to absorb new losses.
 
 <p align="center">
-  <img src="renderings/insurance_metrics_BEL.png" alt="Insurance Metrics"/>
+  <img src="renderings/insurance_gauge_BEL.png" alt="Net Combined Ratio for BEL"/>
   <br>
-  <sub>Risk Adjusted Loss Projections</sub>
+  <sub>Net Combined Ratio for BEL</sub>
 </p>
 
 ### Empirical Loss Ratios
