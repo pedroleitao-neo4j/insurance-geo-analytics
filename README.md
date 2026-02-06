@@ -200,20 +200,20 @@ flowchart TB
 
 #### Core Components
 
-**Data Ingestion Layer (Spatial ETL)**
+***Data Ingestion Layer (Spatial ETL)***
 
 - External Feeds: Connects to APIs (such as DRMKC in our example) and bulk data sources (LitPop, EIOPA) for hazard and economic data.
 - Internal Data: Ingests policy administration systems (PAS) and claims databases.
 - Geospatial Processing: Uses Python (GeoPandas) or Apache Sedona to handle coordinate transformations and spatial joins before graph loading.
 
 
-**The Risk Knowledge Graph (Neo4j)**
+***The Risk Knowledge Graph (Neo4j)***
 
 - The "Golden Record" for Risk: Acts as the central registry linking Policyholders, Physical Assets, Hazards, and Financial Capacity.
 - Graph Data Science (GDS): Runs in-database algorithms (Louvain, k-NN) to compute similarity scores and detect risk communities without moving data.
 
 
-**Application Layer**
+***Application Layer***
 
 - Underwriting Workbench: Queries the graph in real-time (via GraphQL or Bolt) to fetch "risk proximity" scores for a specific address during the quoting process.
 - Portfolio Dashboard: Visualizes accumulation risk and protection gaps (as seen in the RALP analysis).
