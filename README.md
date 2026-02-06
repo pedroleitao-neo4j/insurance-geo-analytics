@@ -127,6 +127,12 @@ This map encodes two dimensions:
 
 Using the **Louvain Algorithm** via the Neo4j Graph Data Science (GDS) library, we project a graph based on vulnerability and economic exposure similarity (k-NN). This identifies natural clusters of regions with similar risk profiles, useful for portfolio segmentation.
 
+<p align="center">
+  <img src="renderings/risk_communities_BEL.png" alt="Similar Risk Communities in BEL"/>
+  <br>
+  <sub>Similar Risk Communities in BEL</sub>
+</p>
+
 ## Getting Started
 
 ### Prerequisites
