@@ -68,10 +68,11 @@ The analysis notebook queries the graph to estimate risk, calculate protection g
 
 We calculate the **Net Combined Ratio** from EIOPA data. A ratio > 100% indicates a stressed market (unprofitable underwriting), while < 100% indicates capacity to absorb new losses.
 
-<div style="display: flex; justify-content: space-between;">
-<img src="renderings/insurance_metrics_BEL.png" alt="Insurance Metrics Heatmap" width="48%"/>
-<img src="renderings/insurance_gauge_BEL.png" alt="Market Capacity Gauge" width="48%"/>
-</div>
+<p align="center">
+  <img src="renderings/insurance_metrics_BEL.png" alt="Insurance Metrics"/>
+  <br>
+  <sub>Risk Adjusted Loss Projections</sub>
+</p>
 
 ### Empirical Loss Ratios
 
@@ -85,7 +86,11 @@ We can query the graph for any specific coordinate (e.g., Verviers, BE) to estim
 
 Extending the point-based analysis, we generate risk maps for entire NUTS2 regions, highlighting areas with the highest potential financial impact from specific hazards.
 
----
+<p align="center">
+  <img src="renderings/nuts3_risk_map_Flood_BEL.png" alt="Location Specific Risk Map"/>
+  <br>
+  <sub>Location Specific Risk Map</sub>
+</p>
 
 ## The Protection Gap Analysis
 
@@ -96,12 +101,10 @@ A key output of this project is the **Risk-Adjusted Loss Potential (RALP)**. Thi
 This dashboard visualizes the "Risk Hotspots"—regions where disasters would cause economic shock that insurance cannot absorb.
 
 <p align="center">
-  <img src="renderings/ralp_heatmap_BEL.png" alt="RALP Heatnmap"/>
+  <img src="renderings/ralp_heatmap_BEL.png" alt="RALP Heatmap"/>
   <br>
   <sub>Risk Adjusted Loss Projections</sub>
 </p>
-
-![Risk Hotspots](renderings/ralp_heatmap_BEL.png)
 
 ### Bivariate Heatmap: The Sub-National Protection Gap
 
@@ -118,9 +121,9 @@ Using the **Louvain Algorithm** via the Neo4j Graph Data Science (GDS) library, 
 
 ### Prerequisites
 
-* **Neo4j Database** (AuraDB or Local)
-* **Python 3.8+**
-* **DRMKC API Token** (Required for vulnerability/loss data)
+- **Neo4j Database** (AuraDB or Local)
+- **Python 3.8+**
+- **DRMKC API Token** (Required for vulnerability/loss data)
 
 ### Environment Setup
 
