@@ -133,7 +133,105 @@ Using the **Louvain Algorithm** via the Neo4j Graph Data Science (GDS) library, 
   <sub>Similar Risk Communities in BEL</sub>
 </p>
 
-## Getting Started
+## Potential Architecture for Productionization
+
+In a production enterprise environment, we move away from siloed data lakes toward an operational graph that serves real-time underwriting and strategic portfolio management.
+
+The following diagram illustrates how this solution fits into a modern insurance technology stack:
+
+```mermaid
+flowchart TB
+    subgraph Sources ["Data Sources"]
+        direction TB
+        Ext_Haz[("External Hazard Data<br/>(DRMKC)")]
+        Ext_Exp[("Global Exposure<br/>(LitPop)")]
+        Ext_Fin[("Market Stats<br/>(EIOPA)")]
+        Int_Pol[("Internal Policy Data<br/>(PAS / Claims)")]
+    end
+
+    subgraph Ingestion ["Ingestion & Spatial ETL"]
+        Py_Loader["Python Spatial Loader<br/>(GeoPandas / Sedona)"]
+        Clean["Data Cleaning &<br/>Coordinate Transform"]
+    end
+
+    subgraph KnowledgeGraph ["Risk Knowledge Graph (Neo4j)"]
+        direction TB
+        N_DB[("Neo4j Database")]
+        
+        subgraph GDS ["Graph Data Science"]
+            Algo1["Community Detection<br/>(Louvain)"]
+            Algo2["Similarity Search<br/>(k-NN)"]
+        end
+    end
+
+    subgraph AppLayer ["Application & Consumption"]
+        UW_Bench["Underwriting Workbench<br/>(Real-time Risk Check)"]
+        Dash["Portfolio Dashboard<br/>(Accumulation & RALP)"]
+        Reins["Reinsurance Reporting<br/>(Aggregated Exposure)"]
+    end
+
+    %% Relationships
+    Ext_Haz --> Py_Loader
+    Ext_Exp --> Py_Loader
+    Ext_Fin --> Py_Loader
+    Int_Pol --> Py_Loader
+    
+    Py_Loader --> Clean
+    Clean -->|Construct Nodes & Rels| N_DB
+    
+    N_DB <--> Algo1
+    N_DB <--> Algo2
+    
+    N_DB -->|Query: Risk Score| UW_Bench
+    N_DB -->|Query: Aggregations| Dash
+    N_DB -->|Query: Treaty Data| Reins
+    
+    %% Styling
+    classDef source fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef process fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+    classDef db fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+    classDef app fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
+    
+    class Ext_Haz,Ext_Exp,Ext_Fin,Int_Pol source;
+    class Py_Loader,Clean process;
+    class N_DB,Algo1,Algo2 db;
+    class UW_Bench,Dash,Reins app;
+```
+
+#### Core Components
+
+**Data Ingestion Layer (Spatial ETL)**
+
+- External Feeds: Connects to APIs (such as DRMKC in our example) and bulk data sources (LitPop, EIOPA) for hazard and economic data.
+- Internal Data: Ingests policy administration systems (PAS) and claims databases.
+- Geospatial Processing: Uses Python (GeoPandas) or Apache Sedona to handle coordinate transformations and spatial joins before graph loading.
+
+
+**The Risk Knowledge Graph (Neo4j)**
+
+- The "Golden Record" for Risk: Acts as the central registry linking Policyholders, Physical Assets, Hazards, and Financial Capacity.
+- Graph Data Science (GDS): Runs in-database algorithms (Louvain, k-NN) to compute similarity scores and detect risk communities without moving data.
+
+
+**Application Layer**
+
+- Underwriting Workbench: Queries the graph in real-time (via GraphQL or Bolt) to fetch "risk proximity" scores for a specific address during the quoting process.
+- Portfolio Dashboard: Visualizes accumulation risk and protection gaps (as seen in the RALP analysis).
+- Reinsurance Reporting: Aggregates graph data to report total exposure by hazard zones for treaty negotiations.
+
+#### Enterprise Integration Flow
+
+- Quote Request: A customer applies for property insurance.
+- Graph Query: The application queries the Knowledge Graph for the property's location.
+- Risk Enrichment: The graph traverses relationships to identify:
+  - Direct Hazard: Is the property in a flood zone?
+- Accumulation: Do we already insure 50 neighbors in this specific flood community?
+- Market Health: Is the local combined ratio already >100%?
+
+
+- Decision: The underwriter receives a composite "Risk Score" and a "Decline/Refer" recommendation based on graph metrics.
+
+## Getting Started with these Notebooks
 
 ### Prerequisites
 
