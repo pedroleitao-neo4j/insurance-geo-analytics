@@ -23,18 +23,11 @@ This project demonstrates how Re/Insurers can leverage Neo4j as a data store to 
 
 The Knowledge Graph is built using a Spatial ETL pipeline ingesting the following open datasets:
 
-| Source | Dataset | Domain | Business Utility |
-| --- | --- | --- | --- |
-| [**LitPop**](https://www.research-collection.ethz.ch/entities/researchdata/12dcfc4f-9d03-463a-8d6b-76c0dc73cdc8) | Global Exposure Data | Exposure Management | Proxy for Total Insurable Value (TIV) at 30 arc-second resolution (~1km). |
-| [**EIOPA**](https://www.eiopa.europa.eu/tools-and-data/insurance-statistics_en#premiums-claims-and-expenses) | Insurance Statistics | Market Intelligence | Aggregated Premiums, Claims & Expenses (Profitability & Capacity). |
-| [**DRMKC**](https://drmkc.jrc.ec.europa.eu/risk-data-hub) | Risk Data Hub | Catastrophe Modelling | Vulnerability indicators and historical loss event catalogs (Flood, Storm, Earthquake). |
+The Knowledge Graph is built using a Spatial ETL pipeline ingesting several open datasets. [**LitPop**](https://www.research-collection.ethz.ch/entities/researchdata/12dcfc4f-9d03-463a-8d6b-76c0dc73cdc8) provides global exposure data serving as a proxy for Total Insurable Value (TIV) at a 30 arc-second resolution (~1km). [**EIOPA**](https://www.eiopa.europa.eu/tools-and-data/insurance-statistics_en#premiums-claims-and-expenses) supplies insurance statistics including aggregated premiums, claims, and expenses for market intelligence. Finally, [**DRMKC**](https://drmkc.jrc.ec.europa.eu/risk-data-hub) contributes vulnerability indicators and historical loss event catalogs for floods, storms, and earthquakes.
 
 ## Project Structure
 
-*   **[`loader.ipynb`](loader.ipynb)**: **ETL & Graph Construction**. Handles data ingestion, spatial processing, and loading of nodes/relationships into Neo4j.
-*   **[`analysis.ipynb`](analysis.ipynb)**: **Analytics & Inference**. Queries the constructed graph to calculate risk metrics, visualize exposure, and detect communities.
-*   **[`MODEL.md`](MODEL.md)**: **Data Model Documentation**. Detailed specification of the Graph Schema, including Nodes, Relationships, Properties, and Constraints.
-*   **[`environment.yml`](environment.yml)**: Conda environment definition file.
+The project is organized into several key files. **[`loader.ipynb`](loader.ipynb)** handles ETL and graph construction, managing data ingestion, spatial processing, and loading of nodes and relationships into Neo4j. **[`analysis.ipynb`](analysis.ipynb)** is used for analytics and inference, querying the constructed graph to calculate risk metrics, visualize exposure, and detect communities. **[`MODEL.md`](MODEL.md)** contains the detailed data model documentation, specifying the graph schema, nodes, relationships, and properties. Finally, **[`environment.yml`](environment.yml)** provides the Conda environment definition.
 
 ## Graph Data Model
 
@@ -45,10 +38,7 @@ The schema centers on **Location (Region)** as the unifying entity, connecting t
 
 ### High-Level Schema
 
-*   **`(:EconomicExposureCell)-[:LOCATED_IN]->(:Region)`**: Granular exposure units (LitPop) aggregated into NUTS3 administrative regions.
-*   **`(:Region)-[:HAS_VULNERABILITY]->(:Vulnerability)`**: Socio-economic vulnerability scores linked to regions.
-*   **`(:LossEvent)-[:IMPACTED_REGION]->(:Region)`**: Historical catastrophe events linked to the areas they impacted.
-*   **`(:Country)-[:REPORTED_FINANCIALS]->(:InsuranceMetric)`**: Financial KPIs (GWP, Claims, Ratios) linked to the top-level country node.
+The schema connects various entities to form a comprehensive risk model. **`(:EconomicExposureCell)-[:LOCATED_IN]->(:Region)`** represents granular exposure units (LitPop) aggregated into NUTS3 administrative regions. These regions are further characterized by **`(:Region)-[:HAS_VULNERABILITY]->(:Vulnerability)`**, which links socio-economic vulnerability scores to specific areas. Historical context is provided by **`(:LossEvent)-[:IMPACTED_REGION]->(:Region)`**, connecting catastrophe events to the areas they impacted. At a higher level, **`(:Country)-[:REPORTED_FINANCIALS]->(:InsuranceMetric)`** links financial KPIs such as GWP, claims, and ratios to the top-level country node.
 
 <p align="center">
   <img src="renderings/schema_graph.png" alt="Graph Schema"/>
@@ -124,8 +114,7 @@ This dashboard visualizes the "Risk Hotspots" - regions where disasters would ca
 
 This map encodes two dimensions:
 
-- Expected Annual Loss (Horizontal): Physical Risk.
-- Insurance Market Stress (Vertical): Financial Capacity.
+This map encodes two dimensions: **Expected Annual Loss** (Physical Risk) on the horizontal axis and **Insurance Market Stress** (Financial Capacity) on the vertical axis.
 
 <p align="center">
   <img src="renderings/protection_gap_bivariate_BEL.png" alt="Bivariate Protection Gap Heatmap"/>
@@ -212,22 +201,17 @@ flowchart TB
 
 ***Data Ingestion Layer (Spatial ETL)***
 
-- External Feeds: Connects to APIs (such as DRMKC in our example) and bulk data sources (LitPop, EIOPA) for hazard and economic data.
-- Internal Data: Ingests policy administration systems (PAS) and claims databases.
-- Geospatial Processing: Uses Python (GeoPandas) or Apache Sedona to handle coordinate transformations and spatial joins before graph loading.
+The **Data Ingestion Layer (Spatial ETL)** connects to external feeds like DRMKC in our example and bulk data sources such as LitPop and EIOPA for hazard and economic data. It also ingests internal data from policy administration systems (PAS) and claims databases. Geospatial processing is handled using Python (GeoPandas) or Apache Sedona to perform coordinate transformations and spatial joins before graph loading.
 
 
 ***The Risk Knowledge Graph (Neo4j)***
 
-- The "Golden Record" for Risk: Acts as the central registry linking Policyholders, Physical Assets, Hazards, and Financial Capacity.
-- Graph Data Science (GDS): Runs in-database algorithms (Louvain, k-NN) to compute similarity scores and detect risk communities without moving data.
+The **Risk Knowledge Graph (Neo4j)** acts as the "Golden Record" for Risk, centrally linking Policyholders, Physical Assets, Hazards, and Financial Capacity. It leverages Graph Data Science (GDS) to run in-database algorithms like Louvain and k-NN, allowing the system to compute similarity scores and detect risk communities without moving data.
 
 
 ***Application Layer***
 
-- Underwriting Workbench: Queries the graph in real-time (via GraphQL or Bolt) to fetch "risk proximity" scores for a specific address during the quoting process.
-- Portfolio Dashboard: Visualizes accumulation risk and protection gaps (as seen in the RALP analysis).
-- Reinsurance Reporting: Aggregates graph data to report total exposure by hazard zones for treaty negotiations.
+The **Application Layer** relies on an Underwriting Workbench that queries the graph in real-time (via GraphQL or Bolt) to fetch "risk proximity" scores for a specific address during the quoting process. A Portfolio Dashboard visualizes accumulation risk and protection gaps (as seen in the RALP analysis), while Reinsurance Reporting aggregates graph data to report total exposure by hazard zones for treaty negotiations.
 
 #### Enterprise Integration Flow
 
@@ -270,20 +254,12 @@ sequenceDiagram
 
 ### Prerequisites
 
-*   **Neo4j Database**: AuraDB (Free Tier works) or Local Instance.
-*   **Python 3.11+**: We recommend using Conda or Mamba for environment management.
-*   **API Token**: [DRMKC Risk Data Hub](https://drmkc.jrc.ec.europa.eu/risk-data-hub-api/docs/) (for vulnerability/loss data).
+To get started, you will need a **Neo4j Database** (AuraDB or a local instance) and **Python 3.11+** (we recommend using Conda or Mamba for environment management). You will also require an **API Token** for the [DRMKC Risk Data Hub](https://drmkc.jrc.ec.europa.eu/risk-data-hub-api/docs/) to access vulnerability and loss data.
 
 ### Installation
 
-1.  **Clone the repository**
-2.  **Create the environment**:
-    ```bash
-    conda env create -f environment.yml
-    conda activate insurance-geo
-    ```
-3.  **Configure Environment**:
-    Create a `.env` file in the root directory:
+Begin by cloning the repository. Next, create and activate the environment by running `conda env create -f environment.yml` followed by `conda activate insurance-geo`.
+Finally, configure the environment by creating a `.env` file in the root directory with the following content:
     ```bash
     NEO4J_URI=bolt://localhost:7687
     NEO4J_USER=neo4j
@@ -295,10 +271,4 @@ sequenceDiagram
 
 ### Usage
 
-1.  **Ingest Data**: Open and run `loader.ipynb`. This will:
-    *   Fetch external data (LitPop, DRMKC, EIOPA).
-    *   Perform spatial joins.
-    *   Construct the graph in Neo4j.
-2.  **Analyze Risk**: Open and run `analysis.ipynb`. This will:
-    *   Query the graph for risk metrics.
-    *   Generate visualizations (Choropleth maps, Protection Gap heatmaps).
+To use the project, start by **ingesting data** using `loader.ipynb`. This notebook fetches external data (LitPop, DRMKC, EIOPA), performs spatial joins, and constructs the graph in Neo4j. Once the data is loaded, proceed to **analyze risk** with `analysis.ipynb`, which queries the graph for risk metrics and generates visualizations such as Choropleth maps and Protection Gap heatmaps.
