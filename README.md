@@ -221,15 +221,38 @@ flowchart TB
 
 #### Enterprise Integration Flow
 
-- Quote Request: A customer applies for property insurance.
-- Graph Query: The application queries the Knowledge Graph for the property's location.
-- Risk Enrichment: The graph traverses relationships to identify:
-  - Direct Hazard: Is the property in a flood zone?
-- Accumulation: Do we already insure 50 neighbors in this specific flood community?
-- Market Health: Is the local combined ratio already >100%?
+```mermaid
+sequenceDiagram
+    autonumber
+    actor C as Customer/Broker
+    participant UW as Underwriting Workbench
+    participant KG as Knowledge Graph (Neo4j)
+    participant RE as Risk Engine
 
+    Note over C, UW: 1. Submission
+    C->>UW: Quote Request (Lat/Lon, Asset Value)
 
-- Decision: The underwriter receives a composite "Risk Score" and a "Decline/Refer" recommendation based on graph metrics.
+    Note over UW, KG: 2. Graph Entry Point
+    UW->>KG: MATCH (:EconomicExposureCell) closest to Lat/Lon
+
+    Note over KG: 3. Graph Traversal (The "Golden Record")
+    KG->>KG: Traverse [:LOCATED_IN] -> (:Region)<br/>(Identify NUTS3 Context)
+    
+    KG->>KG: Traverse (:Region)-[:HAS_VULNERABILITY]->(:Vulnerability)<br/>(Fetch Socio-Economic Score)
+    
+    KG->>KG: Traverse (:LossEvent)-[:IMPACTED_REGION]->(:Region)<br/>(Retrieve Historical Loss Frequency)
+    
+    KG->>KG: Traverse (:Region)-[:PART_OF]->(:Country)<br/>-[:REPORTED_FINANCIALS]->(:InsuranceMetric)<br/>(Check National Market Capacity)
+
+    Note over KG, RE: 4. Risk Calculation
+    KG-->>RE: Return Sub-Graph:<br/>- Cell Exposure Density<br/>- Region Vulnerability<br/>- Historical Event Count<br/>- Country Combined Ratio
+    
+    RE->>RE: Compute RALP (Risk-Adjusted Loss Potential)
+    
+    Note over RE, UW: 5. Decision
+    RE-->>UW: Flag: "High Risk Accumulation"
+    UW-->>C: Response: "Referral Required"
+  ```
 
 ## Getting Started with these Notebooks
 
