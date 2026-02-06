@@ -137,7 +137,7 @@ Using the **Louvain Algorithm** via the Neo4j Graph Data Science (GDS) library, 
 
 In a production enterprise environment, we move away from siloed data lakes toward an operational graph that serves real-time underwriting and strategic portfolio management.
 
-The following diagram illustrates how this solution fits into a modern insurance technology stack:
+The following diagram illustrates how this solution could fit into a modern insurance technology stack:
 
 ```mermaid
 flowchart TB
