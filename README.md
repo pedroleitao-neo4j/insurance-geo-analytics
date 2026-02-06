@@ -221,6 +221,8 @@ flowchart TB
 
 #### Enterprise Integration Flow
 
+The following sequence diagram illustrates how a new insurance quote request would flow through this architecture, leveraging the graph for real-time risk assessment:
+
 ```mermaid
 sequenceDiagram
     autonumber
