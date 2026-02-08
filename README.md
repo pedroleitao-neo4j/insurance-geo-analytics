@@ -19,6 +19,17 @@ Natural catastrophes (NatCat) pose significant risks to insurers and reinsurers.
 
 This project demonstrates how Re/Insurers can leverage Neo4j as a data store to answer critical business questions. For example, it enables the identification of accumulation hotspots-areas where high economic value coincides with high vulnerability. It also helps to reveal protection gaps by highlighting regions with high expected losses but stressed insurance markets. Finally, we demonstrate how unsupervised similarity detection algorithms available in Neo4j can be used to identify **risk communities**, allowing users to find regions that share similar multidimensional risk profiles.
 
+### Glossary of Key Terms
+
+- **Accumulation Risk**: The risk that an insurance company faces when it has a high concentration of insured exposures in a single geographic area, making it vulnerable to a single catastrophic event (e.g., a hurricane or flood) impacting many policies simultaneously.
+- **Economic Exposure**: The total monetary value of people, property, and assets located in hazard-prone areas that are susceptible to loss, regardless of whether they are insured.
+- **Expected Annual Loss (EAL)**: A statistical risk metric representing the average loss occurring over a long period. In insurance pricing, it serves as the baseline for the "risk premium" required to cover long-term claims.
+- **Hazard Vulnerability**: The degree to which an asset (e.g., a residential building) is susceptible to damage when exposed to a specific peril of a certain intensity (e.g., flood depth or wind speed).
+- **Net Combined Ratio**: A key measure of insurer profitability calculated as the sum of incurred losses and operating expenses divided by earned premiums. A ratio above 100% indicates an underwriting loss (paying out more than is collected), while below 100% indicates profit.
+- **Protection Gap**: The difference between total economic losses caused by a disaster and the portion covered by insurance. A large gap places the burden of recovery on governments, businesses, and individuals.
+- **Risk-Adjusted Loss Potential (RALP)**: A composite metric introduced in this project that weights Expected Annual Loss (EAL) by the local insurance market's capacity (Combined Ratio). It highlights "hotspots" where physical risk is high and financial resilience is low.
+- **Total Insurable Value (TIV)**: The aggregate maximum value of an insured portfolio, usually representing the full replacement cost of all insured properties and contents in a given region.
+
 ## Data Sources
 
 The Knowledge Graph is built using a Spatial ETL pipeline ingesting the following open datasets:
